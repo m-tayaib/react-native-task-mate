@@ -1,7 +1,7 @@
 
 import { View, Text, StyleSheet } from 'react-native'
 
-export default function TaskShow({ taskList }) {
+export default function TaskShowItems({ taskList }) {
   const totalTask = taskList.length
   const pendingTask = taskList.filter((task) => !task.isCompleted).length
   const isCompletedTask = taskList.filter((task) => task.isCompleted).length
