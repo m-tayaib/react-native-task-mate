@@ -7,7 +7,7 @@ export default function OverView({ taskList }) {
   const lowPriorityTask = taskList.filter((task) => task.priority === "low").length
   const totalTask = taskList.length
   const isCompletedTask = taskList.filter((task) => task.isCompleted).length
-  const findPercentageOfTotalTask = ((isCompletedTask / totalTask) * 100)
+  const findPercentageOfTotalTask = Math.floor((isCompletedTask / totalTask) * 100) >= 0 ? Math.floor((isCompletedTask / totalTask) * 100) : 0
 
   return (
     <View style={{ paddingHorizontal: 20 }}>

@@ -1,6 +1,6 @@
-import { SafeAreaView, StyleSheet, FlatList, View } from "react-native";
-import { useState } from "react";
-import { StatusBar } from "expo-status-bar"
+import React, { useState, useEffect } from "react";
+import { SafeAreaView, StyleSheet, FlatList, View, Text } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import Header from "./components/Header";
 import TaskShowItems from "./components/TaskShow";
 import FilterTaskBtns from "./components/FilterTask";
@@ -11,62 +11,89 @@ import CreateTaskScreen from "./screens/CreateTaskScreen";
 
 export default function App() {
   const [isModelVisible, setIsModelVisible] = useState(false);
-  const [taskList, setTaskList] = useState([]);
-  const [newTaskAdd, setNewTaskAdd] = useState([])
-  console.log(newTaskAdd);
-  const demoData = [
-    { id: 1, priority: "low", title: "Design team meeting", date: new Date().toDateString(), isCompleted: true },
-    { id: 2, priority: "low", title: "Submit project report", date: new Date().toDateString(), isCompleted: false },
-    { id: 3, priority: "low", title: "Learn JavaScript basics", date: new Date().toDateString(), isCompleted: false },
-    { id: 4, priority: "low", title: "Organize workspace", date: new Date().toDateString(), isCompleted: false },
-    { id: 5, priority: "medium", title: "Doctor appointment", date: new Date().toDateString(), isCompleted: true },
-    { id: 6, priority: "medium", title: "Team standup call", date: new Date().toDateString(), isCompleted: true },
-    { id: 7, priority: "high", title: "Fix urgent bugs", date: new Date().toDateString(), isCompleted: true },
-    { id: 8, priority: "medium", title: "Motivation session", date: new Date().toDateString(), isCompleted: true },
-    { id: 9, priority: "low", title: "Read documentation", date: new Date().toDateString(), isCompleted: true },
-    { id: 10, priority: "medium", title: "Practice coding problems", date: new Date().toDateString(), isCompleted: true },
-  ];
-  const allTaskShow = () => {
-    setTaskList(demoData)
-  }
-  const pendingTaskShow = () => {
-    setTaskList(demoData.filter((item) => !item.isCompleted))
-  }
-  const completedTaskShow = () => {
-    setTaskList(demoData.filter((item) => item.isCompleted))
-  }
+  const [allTasks, setAllTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+
+  const filterTasks = (type) => {
+    switch (type) {
+      case "all":
+        setFilteredTasks(allTasks);
+        break;
+      case "completed":
+        setFilteredTasks(allTasks.filter((item) => item.isCompleted));
+        break;
+      case "pending":
+        setFilteredTasks(allTasks.filter((item) => !item.isCompleted));
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    setFilteredTasks(allTasks);
+  }, [allTasks]);
+
+  const handleComplete = (id) => {
+    const updated = allTasks.map((task) =>
+      task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
+    );
+    setAllTasks(updated);
+  };
+
+  const handleDelete = (id) => {
+    const updated = allTasks.filter((task) => task.id !== id);
+    setAllTasks(updated);
+  };
 
   return (
     <>
       <StatusBar style="light" />
-      <SafeAreaView style={style.container}>
+      <SafeAreaView style={styles.container}>
         <Header />
-        <TaskShowItems taskList={taskList} />
-        <FilterTaskBtns allTaskShow={allTaskShow} completedTaskShow={completedTaskShow} pendingTaskShow={pendingTaskShow} />
-        <View style={style.listBox}>
+        <TaskShowItems taskList={allTasks} />
+        <FilterTaskBtns onFilterChange={filterTasks} />
+        <View style={styles.listBox}>
           <FlatList
-            data={taskList}
-            renderItem={({ item }) => <List task={item} />}
-            keyExtractor={(item) => item.id}
-          ></FlatList>
+            data={filteredTasks}
+            renderItem={({ item }) => (
+              <List
+                task={item}
+                onComplete={handleComplete}
+                onDelete={handleDelete}
+              />
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            ListEmptyComponent={
+              <View>
+                <Text style={{ color: "#ccc", textAlign: "center" }}>
+                  No tasks to display
+                </Text>
+              </View>
+            }
+          />
         </View>
-        <OverView taskList={taskList} />
+        <OverView taskList={allTasks} />
         <AddTaskBtn setIsModelVisible={setIsModelVisible} />
-        {isModelVisible && <CreateTaskScreen setNewTaskAdd={setNewTaskAdd} isModelVisible={isModelVisible} setIsModelVisible={setIsModelVisible} />}
-      </SafeAreaView >
+        {isModelVisible && (
+          <CreateTaskScreen
+            setAllTasks={setAllTasks}
+            isModelVisible={isModelVisible}
+            setIsModelVisible={setIsModelVisible}
+          />
+        )}
+      </SafeAreaView>
     </>
-  )
+  );
 }
 
-
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121218',
-    color: '#fff'
+    backgroundColor: "#121218",
   },
   listBox: {
     height: 310,
-    paddingTop: 10
-  }
+    paddingTop: 10,
+  },
 });

@@ -1,7 +1,9 @@
 import { Modal, View, StyleSheet, TextInput, Text, Image, Pressable } from 'react-native'
 import PriorityBtn from '../components/PriorityBtn'
 import { useState } from 'react'
-export default function CreateTaskScreen({ setNewTaskAdd, isModelVisible, setIsModelVisible }) {
+import uuid from 'react-native-uuid';
+
+export default function CreateTaskScreen({ setAllTasks, isModelVisible, setIsModelVisible }) {
   const [userTask, setUserTask] = useState("");
   const [userDate, setUserDate] = useState("");
   const [userPriority, setUserPriority] = useState("");
@@ -13,16 +15,21 @@ export default function CreateTaskScreen({ setNewTaskAdd, isModelVisible, setIsM
     setUserDate(text)
   }
 
-
-
-
-
   const addTask = () => {
     if (userTask !== "" && userDate !== "" && userPriority !== "") {
-      setNewTaskAdd([{ id: Math.random() * 100 + 100, title: userTask, date: userDate, priority: userPriority }])
-      setIsModelVisible(false)
+      setAllTasks((prev) => [
+        ...prev,
+        {
+          id: uuid.v4(),
+          title: userTask,
+          date: userDate,
+          priority: userPriority,
+          isCompleted: false,
+        },
+      ]);
+      setIsModelVisible(false);
     }
-  }
+  };
 
   return (
     <Modal visible={isModelVisible} animationType="slide"   >
