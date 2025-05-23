@@ -1,8 +1,28 @@
 import { Modal, View, StyleSheet, TextInput, Text, Image, Pressable } from 'react-native'
 import PriorityBtn from '../components/PriorityBtn'
+import { useState } from 'react'
+export default function CreateTaskScreen({ setNewTaskAdd, isModelVisible, setIsModelVisible }) {
+  const [userTask, setUserTask] = useState("");
+  const [userDate, setUserDate] = useState("");
+  const [userPriority, setUserPriority] = useState("");
 
-export default function CreateTaskScreen({ isModelVisible, setIsModelVisible }) {
+  const userTaskHandler = (text) => {
+    setUserTask(text)
+  }
+  const userDateHandler = (text) => {
+    setUserDate(text)
+  }
 
+
+
+
+
+  const addTask = () => {
+    if (userTask !== "" && userDate !== "" && userPriority !== "") {
+      setNewTaskAdd([{ id: Math.random() * 100 + 100, title: userTask, date: userDate, priority: userPriority }])
+      setIsModelVisible(false)
+    }
+  }
 
   return (
     <Modal visible={isModelVisible} animationType="slide"   >
@@ -16,19 +36,19 @@ export default function CreateTaskScreen({ isModelVisible, setIsModelVisible }) 
 
         <Text style={style.HeadingTxt}>Add New Task</Text>
         <View>
-          <TextInput style={style.taskInput} placeholder='What need to be done?' maxLength={30} placeholderTextColor={"#6B7280"} />
-          <TextInput style={style.taskInput} placeholder='Date of task?' maxLength={15} dataDetectorTypes={"date"} calendarEvents={true} placeholderTextColor={"#6B7280"} />
+          <TextInput style={style.taskInput} placeholder='What need to be done?' maxLength={30} placeholderTextColor={"#6B7280"} onChangeText={userTaskHandler} />
+          <TextInput style={style.taskInput} placeholder='Date of task?' maxLength={15} dataDetectorTypes={"date"} calendarEvents={true} placeholderTextColor={"#6B7280"} onChangeText={userDateHandler} />
         </View>
         <View>
           <Text style={style.priorityTxt}>Task Priority</Text>
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <PriorityBtn width={106} height={40} color="#FF4D4D">High</PriorityBtn>
-            <PriorityBtn width={106} height={40} color="#4CAF50">Medium</PriorityBtn>
-            <PriorityBtn width={106} height={40} color="#4A4FE4">Low</PriorityBtn>
+            <PriorityBtn width={106} height={40} color="#FF4D4D" funcPass={() => setUserPriority("high")}  >High</PriorityBtn>
+            <PriorityBtn width={106} height={40} color="#4CAF50" funcPass={() => setUserPriority("medium")} >Medium</PriorityBtn>
+            <PriorityBtn width={106} height={40} color="#4A4FE4" funcPass={() => setUserPriority("low")} >Low</PriorityBtn>
           </View>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-          <PriorityBtn width={350} height={40} color="#207BFF">Create Task</PriorityBtn>
+          <PriorityBtn funcPass={addTask} width={350} height={40} color="#207BFF">Create Task</PriorityBtn>
         </View>
       </View>
 

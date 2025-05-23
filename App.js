@@ -12,7 +12,8 @@ import CreateTaskScreen from "./screens/CreateTaskScreen";
 export default function App() {
   const [isModelVisible, setIsModelVisible] = useState(false);
   const [taskList, setTaskList] = useState([]);
-
+  const [newTaskAdd, setNewTaskAdd] = useState([])
+  console.log(newTaskAdd);
   const demoData = [
     { id: 1, priority: "low", title: "Design team meeting", date: new Date().toDateString(), isCompleted: true },
     { id: 2, priority: "low", title: "Submit project report", date: new Date().toDateString(), isCompleted: false },
@@ -26,7 +27,7 @@ export default function App() {
     { id: 10, priority: "medium", title: "Practice coding problems", date: new Date().toDateString(), isCompleted: true },
   ];
   const allTaskShow = () => {
-    setTaskList((prev) => [...prev, ...demoData])
+    setTaskList(demoData)
   }
   const pendingTaskShow = () => {
     setTaskList(demoData.filter((item) => !item.isCompleted))
@@ -51,7 +52,7 @@ export default function App() {
         </View>
         <OverView taskList={taskList} />
         <AddTaskBtn setIsModelVisible={setIsModelVisible} />
-        {isModelVisible && <CreateTaskScreen isModelVisible={isModelVisible} setIsModelVisible={setIsModelVisible} />}
+        {isModelVisible && <CreateTaskScreen setNewTaskAdd={setNewTaskAdd} isModelVisible={isModelVisible} setIsModelVisible={setIsModelVisible} />}
       </SafeAreaView >
     </>
   )
