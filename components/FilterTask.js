@@ -1,20 +1,31 @@
 import { Text, View, StyleSheet, Pressable } from "react-native";
 import { useState } from "react";
 
-export default function FilterTask({ pendingTaskShow }) {
+export default function FilterTaskBtns({ allTaskShow, completedTaskShow, pendingTaskShow }) {
   const [filterBtnColor, setFilterBtnColor] = useState("All");
 
-
+  const showAllTasks = () => {
+    setFilterBtnColor("All")
+    allTaskShow()
+  }
+  const showPendingTasks = () => {
+    setFilterBtnColor("Pending")
+    pendingTaskShow()
+  }
+  const showCompletedTasks = () => {
+    setFilterBtnColor("Completed")
+    completedTaskShow()
+  }
   return (
     <View style={{ paddingHorizontal: 20 }}>
       <View style={style.taskFilterContainer}>
-        <Pressable style={[style.btn, { backgroundColor: filterBtnColor === "All" ? "#6366F1" : null }]} onPress={() => setFilterBtnColor("All")}>
+        <Pressable onPress={showAllTasks} style={[style.btn, { backgroundColor: filterBtnColor === "All" ? "#6366F1" : null }]}  >
           <Text style={{ color: "#fff" }} >All</Text>
         </Pressable>
-        <Pressable onPress={pendingTaskShow} style={[style.btn, { backgroundColor: filterBtnColor === "Pending" ? "#6366F1" : null }]} onPress={() => setFilterBtnColor("Pending")}>
+        <Pressable style={[style.btn, { backgroundColor: filterBtnColor === "Pending" ? "#6366F1" : null }]} onPress={showPendingTasks}>
           <Text style={{ color: "#fff" }}> Pending</Text>
         </Pressable>
-        <Pressable style={[style.btn, { backgroundColor: filterBtnColor === "Completed" ? "#6366F1" : null }]} onPress={() => setFilterBtnColor("Completed")}>
+        <Pressable style={[style.btn, { backgroundColor: filterBtnColor === "Completed" ? "#6366F1" : null }]} onPress={showCompletedTasks}>
           <Text style={{ color: "#fff" }}>Completed</Text>
         </Pressable>
       </View>
@@ -42,7 +53,7 @@ const style = StyleSheet.create({
     borderRadius: 6,
     justifyContent: "center",
     alignItems: "center",
-
+    zIndex: 9999,
     borderRadius: 8,
     opacity: 1
 
