@@ -2,8 +2,8 @@ import { SafeAreaView, StyleSheet, FlatList, View } from "react-native";
 import { useState } from "react";
 import { StatusBar } from "expo-status-bar"
 import Header from "./components/Header";
-import TaskShow from "./components/TaskShow";
-import FilterTask from "./components/FilterTask";
+import TaskShowItems from "./components/TaskShow";
+import FilterTaskBtns from "./components/FilterTask";
 import List from "./components/List";
 import OverView from "./components/OverView";
 import AddTaskBtn from "./components/AddTaskBtn";
@@ -11,8 +11,9 @@ import CreateTaskScreen from "./screens/CreateTaskScreen";
 
 export default function App() {
   const [isModelVisible, setIsModelVisible] = useState(false);
+  const [taskList, setTaskList] = useState([]);
 
-  const taskList = [
+  const demoData = [
     { id: 1, priority: "low", title: "Design team meeting", date: new Date().toDateString(), isCompleted: true },
     { id: 2, priority: "low", title: "Submit project report", date: new Date().toDateString(), isCompleted: false },
     { id: 3, priority: "low", title: "Learn JavaScript basics", date: new Date().toDateString(), isCompleted: false },
@@ -24,14 +25,23 @@ export default function App() {
     { id: 9, priority: "low", title: "Read documentation", date: new Date().toDateString(), isCompleted: true },
     { id: 10, priority: "medium", title: "Practice coding problems", date: new Date().toDateString(), isCompleted: true },
   ];
+  const allTaskShow = () => {
+    setTaskList((prev) => [...prev, ...demoData])
+  }
+  const pendingTaskShow = () => {
+    setTaskList(demoData.filter((item) => !item.isCompleted))
+  }
+  const completedTaskShow = () => {
+    setTaskList(demoData.filter((item) => item.isCompleted))
+  }
 
   return (
     <>
       <StatusBar style="light" />
       <SafeAreaView style={style.container}>
         <Header />
-        <TaskShow taskList={taskList} />
-        <FilterTask />
+        <TaskShowItems taskList={taskList} />
+        <FilterTaskBtns allTaskShow={allTaskShow} completedTaskShow={completedTaskShow} pendingTaskShow={pendingTaskShow} />
         <View style={style.listBox}>
           <FlatList
             data={taskList}
